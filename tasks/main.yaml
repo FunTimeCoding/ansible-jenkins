@@ -1,1 +1,24 @@
 ---
+# jenkins.io
+
+- apt_key:
+    id: D50582E6
+    url: http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key
+  remote_user: root
+  when: ansible_os_family == 'Debian'
+
+- apt_repository:
+    repo: 'deb http://pkg.jenkins-ci.org/debian-stable binary/'
+    filename: jenkins
+  remote_user: root
+  when: ansible_os_family == 'Debian'
+
+- apt:
+    name: jenkins
+  remote_user: root
+  when: ansible_os_family == 'Debian'
+
+- homebrew:
+    name: jenkins
+  remote_user: shiin
+  when: ansible_system == 'Darwin'
