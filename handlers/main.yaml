@@ -1,0 +1,7 @@
+---
+- name: restart continuous integration service
+  systemd:
+    name: jenkins
+    state: restarted
+  remote_user: root
+  when: ansible_os_family == 'Debian' and jenkins.enabled == True

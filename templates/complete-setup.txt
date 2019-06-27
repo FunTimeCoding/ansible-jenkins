@@ -1,0 +1,9 @@
+import static jenkins.model.Jenkins.instance as jenkins
+import jenkins.install.InstallState
+
+if (jenkins.installState.isSetupComplete()) {
+  println "initial setup already complete"
+} else {
+  println "set initial setup to completed"
+  InstallState.INITIAL_SETUP_COMPLETED.initializeState()
+}

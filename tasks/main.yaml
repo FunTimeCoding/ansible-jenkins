@@ -18,7 +18,86 @@
   remote_user: root
   when: ansible_os_family == 'Debian'
 
+- shell: sleep 30
+  remote_user: root
+  when: ansible_os_family == 'Debian'
+
+- stat:
+    path: /var/lib/jenkins/secrets/initialAdminPassword
+  remote_user: root
+  register: check_password_file
+
+- shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+  register: initial_admin_password
+  remote_user: root
+  when: ansible_os_family == 'Debian' and check_password_file.stat.exists
+
+- jenkins_script:
+    script: "{{ lookup('file', 'templates/change-password.txt') }}"
+    args:
+      jenkins_admin_password: '{{ jenkins.admin.password }}'
+    user: admin
+    password: '{{ initial_admin_password.stdout }}'
+  remote_user: root
+  when: ansible_os_family == 'Debian' and check_password_file.stat.exists
+
+- jenkins_script:
+    script: "{{ lookup('file', 'templates/complete-setup.txt') }}"
+    user: admin
+    password: '{{ jenkins.admin.password }}'
+  notify:
+  - restart continuous integration service
+  remote_user: root
+  when: ansible_os_family == 'Debian'
+
+- file:
+    path: /var/lib/jenkins/secrets/initialAdminPassword
+    state: absent
+  remote_user: root
+  when: ansible_os_family == 'Debian'
+
+- jenkins_plugin:
+    name: ldap
+    url_username: admin
+    url_password: '{{ jenkins.admin.password }}'
+  notify:
+  - restart continuous integration service
+  remote_user: root
+  when: ansible_os_family == 'Debian'
+
+- jenkins_plugin:
+    name: checkstyle
+    url_username: admin
+    url_password: '{{ jenkins.admin.password }}'
+  notify:
+  - restart continuous integration service
+  remote_user: root
+  when: ansible_os_family == 'Debian'
+
+- jenkins_plugin:
+    name: htmlpublisher
+    url_username: admin
+    url_password: '{{ jenkins.admin.password }}'
+  notify:
+  - restart continuous integration service
+  remote_user: root
+  when: ansible_os_family == 'Debian'
+
 - homebrew:
     name: jenkins
   remote_user: shiin
   when: ansible_system == 'Darwin'
+
+- systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+  remote_user: root
+  when: ansible_os_family == 'Debian' and jenkins.enabled == True
+
+- systemd:
+    name: jenkins
+    state: stopped
+    enabled: no
+  remote_user: root
+  when: ansible_os_family == 'Debian' and jenkins.enabled == False
