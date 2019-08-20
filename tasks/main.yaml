@@ -100,4 +100,4 @@
     state: stopped
     enabled: no
   remote_user: root
-  when: ansible_os_family == 'Debian' and jenkins.enabled == False
+  when: ansible_os_family == 'Debian' and not jenkins.enabled
