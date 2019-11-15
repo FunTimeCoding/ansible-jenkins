@@ -83,6 +83,11 @@
   remote_user: root
   when: ansible_os_family == 'Debian'
 
+# GOPATH must be set to this so that jobs will not try to overwrite directories in ~/go/src with symlinks.
+- file:
+    path: '{{ ansible_user_dir }}/jgo/src'
+    state: directory
+
 - homebrew:
     name: jenkins
   remote_user: shiin
