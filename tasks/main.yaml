@@ -18,6 +18,10 @@
   remote_user: root
   when: ansible_os_family == 'Debian'
 
+- homebrew:
+    name: jenkins
+  when: ansible_system == 'Darwin'
+
 - shell: sleep 30
   remote_user: root
   when: ansible_os_family == 'Debian'
@@ -48,7 +52,7 @@
   notify:
   - restart continuous integration service
   remote_user: root
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family == 'Debian' and check_password_file.stat.exists
 
 - file:
     path: /var/lib/jenkins/secrets/initialAdminPassword
@@ -58,7 +62,7 @@
 
 - jenkins_plugin:
     name: ldap
-    url_username: admin
+    url_username: '{{ jenkins.admin.username }}'
     url_password: '{{ jenkins.admin.password }}'
   notify:
   - restart continuous integration service
@@ -67,7 +71,7 @@
 
 - jenkins_plugin:
     name: checkstyle
-    url_username: admin
+    url_username: '{{ jenkins.admin.username }}'
     url_password: '{{ jenkins.admin.password }}'
   notify:
   - restart continuous integration service
@@ -76,22 +80,12 @@
 
 - jenkins_plugin:
     name: htmlpublisher
-    url_username: admin
+    url_username: '{{ jenkins.admin.username }}'
     url_password: '{{ jenkins.admin.password }}'
   notify:
   - restart continuous integration service
   remote_user: root
   when: ansible_os_family == 'Debian'
-
-# GOPATH must be set to this so that jobs will not try to overwrite directories in ~/go/src with symlinks.
-- file:
-    path: '{{ ansible_user_dir }}/jgo/src'
-    state: directory
-
-- homebrew:
-    name: jenkins
-  remote_user: shiin
-  when: ansible_system == 'Darwin'
 
 - systemd:
     name: jenkins

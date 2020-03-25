@@ -1,4 +1,5 @@
 jenkins:
   enabled: False
   admin:
+    username: admin
     password: admin
