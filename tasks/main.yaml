@@ -13,6 +13,13 @@
   remote_user: root
   when: ansible_os_family == 'Debian'
 
+- shell: dpkg --list | grep --quiet 'ii  jenkins'
+  register: jenkins_installed
+  check_mode: no
+  ignore_errors: yes
+  changed_when: jenkins_installed.rc == 1
+  when: ansible_os_family == 'Debian'
+
 - apt:
     name: jenkins
   remote_user: root
@@ -22,10 +29,9 @@
     name: jenkins
   when: ansible_system == 'Darwin'
 
-# TODO: Sleep only if just installed.
 - shell: sleep 30
   remote_user: root
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family == 'Debian' and jenkins_installed.rc == 1
 
 - stat:
     path: /var/lib/jenkins/secrets/initialAdminPassword
@@ -58,6 +64,15 @@
 - file:
     path: /var/lib/jenkins/secrets/initialAdminPassword
     state: absent
+  remote_user: root
+  when: ansible_os_family == 'Debian'
+
+- jenkins_plugin:
+    name: git
+    url_username: '{{ jenkins.admin.username }}'
+    url_password: '{{ jenkins.admin.password }}'
+  notify:
+  - restart continuous integration service
   remote_user: root
   when: ansible_os_family == 'Debian'
 
