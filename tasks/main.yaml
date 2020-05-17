@@ -22,6 +22,7 @@
     name: jenkins
   when: ansible_system == 'Darwin'
 
+# TODO: Sleep only if just installed.
 - shell: sleep 30
   remote_user: root
   when: ansible_os_family == 'Debian'
