@@ -85,18 +85,26 @@
   remote_user: root
   when: ansible_os_family == 'Debian'
 
-# TODO: What is the replacement?
-#- jenkins_plugin:
-#    name: checkstyle
-#    url_username: '{{ jenkins.admin.username }}'
-#    url_password: '{{ jenkins.admin.password }}'
-#  notify:
-#  - restart continuous integration service
-#  remote_user: root
-#  when: ansible_os_family == 'Debian'
+- jenkins_plugin:
+    name: warnings-ng
+    url_username: '{{ jenkins.admin.username }}'
+    url_password: '{{ jenkins.admin.password }}'
+  notify:
+  - restart continuous integration service
+  remote_user: root
+  when: ansible_os_family == 'Debian'
 
 - jenkins_plugin:
     name: htmlpublisher
+    url_username: '{{ jenkins.admin.username }}'
+    url_password: '{{ jenkins.admin.password }}'
+  notify:
+  - restart continuous integration service
+  remote_user: root
+  when: ansible_os_family == 'Debian'
+
+- jenkins_plugin:
+    name: jacoco
     url_username: '{{ jenkins.admin.username }}'
     url_password: '{{ jenkins.admin.password }}'
   notify:
