@@ -1,3 +1,3 @@
 #!/bin/sh -e
 
-~/src/jenkins-tools/bin/update-job.sh ansible-jenkins job.xml
+~/src/continuous-integration-tools/bin/jenkins/update-job.sh ansible-jenkins job.xml
