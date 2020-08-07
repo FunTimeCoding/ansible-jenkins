@@ -2,8 +2,7 @@
 # jenkins.io
 
 - apt_key:
-    id: D50582E6
-    url: http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
   remote_user: root
   when: ansible_os_family == 'Debian'
 
