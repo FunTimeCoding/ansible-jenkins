@@ -9,6 +9,7 @@
 - apt_repository:
     repo: 'deb http://pkg.jenkins-ci.org/debian-stable binary/'
     filename: jenkins
+    mode: 0644
   remote_user: root
   when: ansible_os_family == 'Debian'
 
